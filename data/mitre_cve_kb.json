@@ -1,0 +1,159 @@
+{
+  "classes": {
+    "Benign": {
+      "class_id": 0,
+      "name": "Benign / Normal Network Traffic",
+      "severity": 0.0,
+      "cvss": 0.0,
+      "category": "Normal",
+      "description": "Legitimate enterprise communications conforming to standard protocol specifications without anomalous flow deviations, malformed headers, or exfiltration indicators.",
+      "mitre": {
+        "tactic": "None",
+        "technique_id": "None",
+        "technique_name": "Standard Network Operation"
+      },
+      "cve": [],
+      "indicators": ["Synchronous handshakes", "Periodic keepalives", "Standard payload sizes", "Uniform inter-arrival times"]
+    },
+    "DDoS": {
+      "class_id": 1,
+      "name": "Distributed Denial of Service",
+      "severity": 0.85,
+      "cvss": 7.5,
+      "category": "Volumetric / Flood",
+      "description": "High-volume distributed traffic stream saturating target bandwidth or service resources through coordinated packet flooding (SYN flood, UDP flood, ICMP amplification).",
+      "mitre": {
+        "tactic": "Impact",
+        "technique_id": "T1498",
+        "technique_name": "Network Denial of Service"
+      },
+      "cve": ["CVE-2022-26377", "CVE-2023-44487"],
+      "indicators": ["Abnormally high packet rate", "Asymmetric forward/backward flow ratios", "SYN flag saturation", "Repetitive destination IP/port targets"]
+    },
+    "PortScan": {
+      "class_id": 2,
+      "name": "Port Scanning / Network Reconnaissance",
+      "severity": 0.45,
+      "cvss": 5.3,
+      "category": "Reconnaissance",
+      "description": "Systematic probe of transport layer ports to discover active network services, daemon banners, operating system footprints, and accessible attack surfaces.",
+      "mitre": {
+        "tactic": "Reconnaissance",
+        "technique_id": "T1595.001",
+        "technique_name": "Active Scanning: Scanning IP Blocks"
+      },
+      "cve": ["CVE-2020-0796"],
+      "indicators": ["Rapid connection attempts to sequential ports", "High ratio of SYN without ACK completion", "Short connection durations", "RST flags received from closed ports"]
+    },
+    "BruteForce": {
+      "class_id": 3,
+      "name": "Credential Brute Force / Dictionary Attack",
+      "severity": 0.70,
+      "cvss": 7.3,
+      "category": "Credential Access",
+      "description": "Automated sequential authentication attempts against network management interfaces (SSH, FTP, RDP, Telnet) using dictionary lists or credential stuffing patterns.",
+      "mitre": {
+        "tactic": "Credential Access",
+        "technique_id": "T1110.001",
+        "technique_name": "Brute Force: Password Guessing"
+      },
+      "cve": ["CVE-2021-41773", "CVE-2022-21449"],
+      "indicators": ["High frequency of failed authentication packets", "Constant small payload sizes", "Repeated SSH key exchange or FTP USER/PASS sequences", "Fixed source IP targeting single service daemon"]
+    },
+    "WebAttack": {
+      "class_id": 4,
+      "name": "Web Application Attack (SQLi / XSS / LFI)",
+      "severity": 0.80,
+      "cvss": 8.8,
+      "category": "Initial Access / Execution",
+      "description": "Exploitation of web service vulnerabilities through malformed HTTP inputs, SQL injection clauses, Cross-Site Scripting scripts, or local file inclusion path traversals.",
+      "mitre": {
+        "tactic": "Initial Access",
+        "technique_id": "T1190",
+        "technique_name": "Exploit Public-Facing Application"
+      },
+      "cve": ["CVE-2021-44228", "CVE-2023-34362"],
+      "indicators": ["SQL meta-characters (UNION, SELECT, --, OR 1=1) in URI/Body", "Script tags in HTTP headers", "Null byte injections (%00)", "Server 500 error spikes"]
+    },
+    "Infiltration": {
+      "class_id": 5,
+      "name": "Internal Network Infiltration / Lateral Movement",
+      "severity": 0.95,
+      "cvss": 9.8,
+      "category": "Lateral Movement / Execution",
+      "description": "Post-compromise pivot operations across trusted subnets involving privilege escalation, lateral command execution via PsExec/WMI, and token impersonation.",
+      "mitre": {
+        "tactic": "Lateral Movement",
+        "technique_id": "T1021.002",
+        "technique_name": "Remote Services: SMB/Windows Admin Shares"
+      },
+      "cve": ["CVE-2017-0144", "CVE-2020-1472"],
+      "indicators": ["Inter-subnet SMB/RPC connection spikes", "Unusual administrative tool transfer", "Named pipe usage (psexec)", "Privileged security group queries"]
+    },
+    "Botnet": {
+      "class_id": 6,
+      "name": "Botnet Command and Control (C2)",
+      "severity": 0.90,
+      "cvss": 9.0,
+      "category": "Command and Control",
+      "description": "Beaconing and tasking communication channels established between infected internal hosts and external threat-actor controlled infrastructure via HTTP/DNS tunnels.",
+      "mitre": {
+        "tactic": "Command and Control",
+        "technique_id": "T1071.001",
+        "technique_name": "Application Layer Protocol: Web Protocols"
+      },
+      "cve": ["CVE-2021-26855", "CVE-2023-2868"],
+      "indicators": ["Strict periodic heartbeat beacons with jitter", "DNS queries with high Shannon entropy (DGA)", "Non-standard port communications", "Base64 encoded payload chunks"]
+    },
+    "Worms": {
+      "class_id": 7,
+      "name": "Self-Replicating Network Worm",
+      "severity": 0.90,
+      "cvss": 9.3,
+      "category": "Lateral Movement / Spreading",
+      "description": "Autonomous propagation across adjacent vulnerable hosts by exploiting unauthenticated remote code execution flaws without requiring human intervention.",
+      "mitre": {
+        "tactic": "Lateral Movement",
+        "technique_id": "T1210",
+        "technique_name": "Exploitation of Remote Services"
+      },
+      "cve": ["CVE-2019-0708", "CVE-2017-0143"],
+      "indicators": ["Massive automated broadcast/multicast scans", "Identical exploit payloads sent to multiple subnets", "Rapid network socket exhaustion", "Sudden spike in high-port traffic"]
+    },
+    "Backdoor": {
+      "class_id": 8,
+      "name": "Persistent Backdoor / Covert Channel",
+      "severity": 0.88,
+      "cvss": 8.6,
+      "category": "Persistence",
+      "description": "Stealthy persistence mechanism granting unauthorized persistent interactive remote access through reverse shells, custom protocol encapsulations, or hooked binaries.",
+      "mitre": {
+        "tactic": "Persistence",
+        "technique_id": "T1059.004",
+        "technique_name": "Command and Scripting Interpreter: Unix Shell"
+      },
+      "cve": ["CVE-2022-30190", "CVE-2024-3094"],
+      "indicators": ["Outbound long-lived reverse TCP connections", "Low and slow payload exchanges", "Unsigned process establishing network socket", "Abnormal parent-child process tree spawning netcat/bash"]
+    },
+    "Ransomware": {
+      "class_id": 9,
+      "name": "Ransomware Encryption & Staging",
+      "severity": 1.0,
+      "cvss": 10.0,
+      "category": "Impact",
+      "description": "Massive encryption of local and networked file shares preceded by shadow copy deletion, recovery suppression, and staging for dual-extortion exfiltration.",
+      "mitre": {
+        "tactic": "Impact",
+        "technique_id": "T1486",
+        "technique_name": "Data Encrypted for Impact"
+      },
+      "cve": ["CVE-2021-34527", "CVE-2023-27532"],
+      "indicators": ["Burst in SMB write/rename operations across file shares", "High entropy in transferred file blocks", "Volume Shadow Copy deletion commands", "Suspicious payment wallet / tor onion rendezvous traffic"]
+    }
+  },
+  "held_out_zero_shot": {
+    "CIC-IDS2018": ["Infiltration", "Botnet"],
+    "UNSW-NB15": ["Worms", "Backdoor"],
+    "TON_IoT": ["Ransomware", "Backdoor"]
+  }
+}

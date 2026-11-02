@@ -1,0 +1,43 @@
+# Controller Hyperparameters and State-Space Settings
+# As detailed in Table 1 ("Hyperparameters, cost weights, and state-space settings")
+# of Dell'Acqua et al., Future Internet (MDPI)
+
+cost_weights:
+  w1_miscalibration: 1.00    # Weight on (T_hat_t - r_t)^2
+  w2_cognitive_load: 0.45    # Weight on estimated cognitive load C_hat_t
+  w3_explanation_cost: 0.30  # Weight on complexity cost F(a)
+  w4_task_alignment: 0.60    # Weight on task risk penalty R_task(a, d_t)
+  w5_overtrust: 1.20         # Weight on asymmetric overtrust penalty R_over(a)
+  w6_undertrust: 0.80        # Weight on asymmetric undertrust penalty R_under(a)
+
+explanation_actions:
+  levels: ["E0", "E1", "E2", "E3"]
+  kappa_intensity: [0.1, 0.4, 0.7, 1.0]     # Explanation intensity kappa(a)
+  lambda_complexity: [0.0, 0.2, 0.5, 0.9]   # Intrinsic cost factor lambda_a
+  kappa_high: 0.70                          # Threshold for overtrust penalty
+  kappa_low: 0.40                           # Threshold for undertrust penalty
+  delta_switch: 0.15                        # Action smoothing hysteresis threshold
+
+state_space_filter:
+  alpha_trust_persistence: 0.92             # Persistence coefficient for unconstrained trust theta
+  rho_workload_persistence: 0.88            # Persistence coefficient for cognitive load C
+  beta1_success: 0.25                       # Positive trust reinforcement on correct recommendation
+  beta2_failure: 0.65                       # Negative trust degradation on error (enforcing beta2 > beta1)
+  beta3_reliability: 0.20                   # Trust coupling with calibrated NIDS reliability
+  gamma1_difficulty: 0.15                   # Workload sensitivity to task difficulty d_t
+  gamma2_explanation: 0.12                  # Workload induced by explanation intensity E(a_t)
+  gamma3_error: 0.10                        # Workload induced by recommendation mismatch
+  q_theta: 0.04                             # Process noise variance for latent trust
+  q_c: 0.05                                 # Process noise variance for cognitive load
+  r_gaze_dispersion: 0.08                   # Measurement noise variance for gaze dispersion
+  r_gaze_entropy: 0.12                      # Measurement noise variance for gaze entropy
+  r_head_velocity: 0.10                     # Measurement noise variance for head movement
+  r_interaction_latency: 0.15               # Measurement noise variance for reaction latency
+  initial_trust_prior: 0.50                 # Neutral trust prior T_0 = 0.50 (theta_0 = 0.0)
+  initial_load_prior: 0.30                  # Neutral cognitive load prior C_0 = 0.30
+
+trust_agnostic_baseline:
+  w3: 0.30
+  w4: 0.60
+  w_r: 1.00                                 # Weight on (1 - r_t) * (kappa_high - kappa(a))^2
+  w_c: 0.45                                 # Weight on C_hat_t * kappa(a)

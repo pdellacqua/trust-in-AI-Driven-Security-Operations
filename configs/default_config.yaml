@@ -1,0 +1,39 @@
+# Global Project Configuration
+experiment:
+  num_participants: 36
+  trials_per_block: 20
+  num_blocks: 3
+  total_trials_per_participant: 60
+  total_cohort_trials: 2160
+  reliability_distribution:
+    high_range: [0.80, 0.95]
+    high_count: 12
+    medium_range: [0.55, 0.79]
+    medium_count: 5
+    low_range: [0.30, 0.54]
+    low_count: 3
+  perturbations_per_block: 2
+  total_perturbations_per_participant: 6
+  conditions: ["Static", "Trust-Agnostic", "Trust-Calibrated"]
+
+nids_model:
+  input_dim: 42
+  hidden_dim: 128
+  embedding_dim: 64
+  temperature: 0.07
+  omega_loss: 0.60              # Multimodal loss weighting (0.6 * L_traffic + 0.4 * L_multi)
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  batch_size: 256
+  epochs: 50
+  early_stopping_patience: 10
+  default_temperature_cal: 1.45 # Temperature scaling parameter tau_cal
+
+datasets:
+  supported: ["CSE-CIC-IDS2018", "UNSW-NB15", "TON_IoT"]
+  split_ratios: [0.70, 0.10, 0.20] # Train / Validation / Test
+
+ui:
+  host: "127.0.0.1"
+  port: 8080
+  title: "Trust-Calibrated SOC Incident Investigation Console"

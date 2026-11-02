@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Large raw datasets (not tracked in repo as per user request)
+data/**/*.csv
+data/**/*.pcap
+data/**/*.parquet
+data/**/*.tar.gz
+data/**/*.zip
+*.csv
+*.pcap

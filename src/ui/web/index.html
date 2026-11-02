@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trust-Calibrated Security Operations Center (SOC) Console</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan)">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <h1>Trust-Calibrated SOC Incident Console</h1>
+      <span class="badge" id="policyBadge">Policy: Trust-Calibrated (TC)</span>
+    </div>
+    <div class="controls">
+      <label for="policySelect" style="font-size: 0.8rem; color: var(--text-muted)">Active Policy:</label>
+      <select id="policySelect">
+        <option value="Trust-Calibrated" selected>Trust-Calibrated (pi_TC)</option>
+        <option value="Trust-Agnostic">Trust-Agnostic Adaptive (pi_TA)</option>
+        <option value="Static">Static Explanation (pi_S: E1)</option>
+      </select>
+      <button id="nextAlertBtn" class="primary">Next Alert</button>
+      <button id="resetSessionBtn">Reset Session</button>
+    </div>
+  </header>
+
+  <!-- Main Work Area -->
+  <div class="main-container">
+    
+    <!-- Left Panel: Incident Investigation & Adaptive Explanation -->
+    <div class="left-panel">
+      
+      <!-- Alert Meta Information -->
+      <div class="card">
+        <div class="card-title">
+          <span>Security Alert Telemetry</span>
+          <span id="alertTrialTag" style="color: var(--accent-cyan); font-weight: bold;">Trial #1 / 20</span>
+        </div>
+        <div class="alert-grid">
+          <div class="meta-item">
+            <span class="meta-label">Event ID</span>
+            <span class="meta-value" id="metaEventId">EVT-9042</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Source IP : Port</span>
+            <span class="meta-value" id="metaSrc">192.168.10.15 : 44920</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Destination IP : Port</span>
+            <span class="meta-value" id="metaDst">10.0.0.8 : 445 (SMB)</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Protocol / Duration</span>
+            <span class="meta-value" id="metaProto">TCP / 14.8s</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Forward / Backward Packets</span>
+            <span class="meta-value" id="metaPkts">45 fwd / 42 bwd</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Investigation Difficulty (d_t)</span>
+            <span class="meta-value" id="metaDiff">0.42 (Medium)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI-Driven NIDS Recommendation Banner -->
+      <div class="nids-banner malicious" id="nidsBanner">
+        <div>
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px;">NIDS Model Recommendation</div>
+          <div class="nids-class" id="nidsClass">Infiltration / Lateral Movement</div>
+        </div>
+        <div class="reliability-badge" id="nidsReliability">
+          Reliability: 88.5%
+        </div>
+      </div>
+
+      <!-- Adaptive Explanation Card (E0 - E3) -->
+      <div class="explanation-card" id="explanationCard">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="level-tag level-E2" id="explanationLevelTag">Level E2: Rich Semantic Evidence</span>
+          <span id="controllerReasonTag" style="font-size: 0.75rem; color: var(--text-muted);">Controller: Overtrust Mitigated</span>
+        </div>
+        
+        <!-- Explanation Body dynamically generated -->
+        <div id="explanationBody">
+          <!-- Dynamic Content Injection -->
+        </div>
+      </div>
+
+      <!-- Human Analyst Verdict Panel -->
+      <div class="card">
+        <div class="card-title">Analyst Triage Decision</div>
+        <div class="decision-panel">
+          <button class="decision-btn btn-accept" id="btnAccept">Accept AI Recommendation</button>
+          <button class="decision-btn btn-reject" id="btnReject">Override / Reject Recommendation</button>
+        </div>
+        <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted)">
+          <span>Investigation timer: <strong id="timerText" style="color: var(--text-main);">0.0s</strong></span>
+          <span id="feedbackText" style="font-weight: 600;"></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Panel: Closed-Loop Human State & Telemetry Dashboard -->
+    <div class="right-panel">
+      
+      <!-- Cognitive State Gauges -->
+      <div class="gauge-row">
+        
+        <div class="gauge-box">
+          <span class="gauge-label">Inferred Latent Trust (T_hat_t)</span>
+          <div class="gauge-value" id="gaugeTrust">0.500</div>
+          <div class="meter-bar">
+            <div class="meter-fill" id="meterTrust" style="width: 50%; background: var(--accent-blue);"></div>
+          </div>
+        </div>
+
+        <div class="gauge-box">
+          <span class="gauge-label">Model Reliability (r_t)</span>
+          <div class="gauge-value" id="gaugeReliability">0.885</div>
+          <div class="meter-bar">
+            <div class="meter-fill" id="meterReliability" style="width: 88%; background: var(--accent-cyan);"></div>
+          </div>
+        </div>
+
+        <div class="gauge-box">
+          <span class="gauge-label">Trust Calibration Error (TCE_t)</span>
+          <div class="gauge-value" id="gaugeTCE">-0.385</div>
+          <div class="meter-bar">
+            <div class="meter-fill" id="meterTCE" style="width: 30%; background: var(--accent-amber);"></div>
+          </div>
+        </div>
+
+        <div class="gauge-box">
+          <span class="gauge-label">Cognitive Workload (C_hat_t)</span>
+          <div class="gauge-value" id="gaugeLoad">0.320</div>
+          <div class="meter-bar">
+            <div class="meter-fill" id="meterLoad" style="width: 32%; background: var(--accent-green);"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Real-Time State Trajectory Chart -->
+      <div class="card">
+        <div class="card-title">Closed-Loop Cognitive State Evolution</div>
+        <div class="chart-container">
+          <canvas id="stateChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Session Performance & Reliance Stats -->
+      <div class="card">
+        <div class="card-title">Session Operational Metrics</div>
+        <div class="alert-grid">
+          <div class="meta-item">
+            <span class="meta-label">Decisions Submitted</span>
+            <span class="meta-value" id="statTrialsDone">0</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Analyst Accuracy</span>
+            <span class="meta-value" id="statAccuracy" style="color: var(--accent-green);">100.0%</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Automation Bias Rate (ABR)</span>
+            <span class="meta-value" id="statABR" style="color: var(--accent-cyan);">0.0%</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Inappropriate Rejection (IRR)</span>
+            <span class="meta-value" id="statIRR" style="color: var(--accent-amber);">0.0%</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Mean Absolute TCE (MACE)</span>
+            <span class="meta-value" id="statMACE">0.104</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Avg Response Time</span>
+            <span class="meta-value" id="statTime">27.4s</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
