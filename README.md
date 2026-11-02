@@ -1,24 +1,26 @@
 # Trust-in-AI-Driven-Security-Operations
+
 ### Human-Centric Trust Calibration and Adaptive Explainability in AI-Driven Security Operations
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status: Production-Ready](https://img.shields.io/badge/Status-Verified%20%26%20Reproducible-brightgreen.svg)]()
-[![Venue: Future Internet (MDPI)](https://img.shields.io/badge/Journal-Future%20Internet%20(MDPI)-orange.svg)]()
+[![Venue: Future Internet (MDPI)](<https://img.shields.io/badge/Journal-Future%20Internet%20(MDPI)-orange.svg>)]()
 
 > **Authors:** Pierluigi Dell'Acqua, Francesco La Rosa, and Massimo Villari  
-> *Department of Mathematical and Computer Sciences, Physical Sciences and Earth Sciences, University of Messina, Italy*
+> _Department of Mathematical and Computer Sciences, Physical Sciences and Earth Sciences, University of Messina, Italy_
 
 ---
 
 ## 📋 Overview
 
 Artificial Intelligence (AI) and Machine Learning have become vital components in modern **Security Operations Centers (SOCs)**, accelerating threat detection and alert triage. However, exposing high model confidence or static explanations often fails to induce appropriate human reliance:
+
 - **Automation Bias (Overtrust / Misuse):** Analysts uncritically accept incorrect AI recommendations, failing to identify deceptive attacks, novel zero-shot evasions, or false alarms.
 - **Algorithm Aversion (Undertrust / Disuse):** Analysts reject reliable predictions or unnecessarily re-investigate routine alerts, degrading response throughput and causing cognitive fatigue.
 
-This repository provides the complete, modular, and reproducible implementation of the **Human-Centric Trust-Calibrated Adaptive Explainability Framework**. Rather than treating trust maximization or static XAI as standalone goals, the framework formulates incident triage as a **closed-loop feedback control system**. 
+This repository provides the complete, modular, and reproducible implementation of the **Human-Centric Trust-Calibrated Adaptive Explainability Framework**. Rather than treating trust maximization or static XAI as standalone goals, the framework formulates incident triage as a **closed-loop feedback control system**.
 
 By continuously estimating latent analyst trust ($\hat{T}_t$) and cognitive workload ($\hat{C}_t$) via a non-intrusive **Extended Kalman Filter (EKF)**, the system calculates the signed **Trust Calibration Error ($\mathrm{TCE}_t = \hat{T}_t - r_t$)** and dynamically regulates explanation depth across four discrete granularities ($E_0$--$E_3$) to maintain calibrated reliance.
 
@@ -49,6 +51,7 @@ flowchart LR
 ## 📐 Mathematical Formulation
 
 ### 1. Latent Human State Transition Dynamics
+
 The analyst's internal state is represented as $\mathbf{z}_t = [\theta_t, C_t]^\top$, where unconstrained trust $\theta_t$ maps to interpretable trust via the logistic sigmoid:
 $$T_t = \sigma(\theta_t) = \frac{1}{1 + e^{-\theta_t}} \in [0, 1]$$
 
@@ -63,10 +66,12 @@ $$C_{t+1} = \rho C_t + \gamma_1 d_t + \gamma_2 E(a_t) + \gamma_3 (1 - k_t) + \va
 - $\mathbf{Q} = \mathrm{diag}(q_\theta, q_C) = \mathrm{diag}(0.04, 0.05)$ and $\mathbf{R} = \mathrm{diag}(0.08, 0.12, 0.10, 0.15)$.
 
 ### 2. Adaptive Explanation Cost Minimization
+
 At investigation step $t$, the controller selects the optimal explanation action $a_t^* \in \{E_0, E_1, E_2, E_3\}$ by minimizing the constrained operational cost function $J_t(a)$:
 $$J_t(a) = w_1 (\hat{T}_t - r_t)^2 + w_2 \hat{C}_t + w_3 F(a) + w_4 R_{\mathrm{task}}(a, d_t) + w_5 R_{\mathrm{over}}(a)\max(0, \mathrm{TCE}_t) + w_6 R_{\mathrm{under}}(a)\max(0, -\mathrm{TCE}_t)$$
 
 Where:
+
 - $F(a) = \lambda_a \kappa(a)^2$ penalizes intrinsic display complexity.
 - $R_{\mathrm{task}}(a, d_t) = [d_t - \kappa(a)]^2$ penalizes mismatch with task difficulty.
 - $R_{\mathrm{over}}(a) = \max(0, \kappa_{\mathrm{high}} - \kappa(a))^2$ penalizes shallow explanations under overtrust.
@@ -77,12 +82,12 @@ Where:
 
 ## 🔍 Discrete Explanation Levels Hierarchy
 
-| Level | Name | Information Exposed | Operational Goal |
-| :---: | :--- | :--- | :--- |
-| **$E_0$** | **Essential Decision** | Predicted threat class and system severity label (Low/Med/High/Crit). | Routine, high-confidence alerts with well-calibrated trust; minimizes cognitive load. |
-| **$E_1$** | **Concise Evidence** | Decision, calibrated reliability percentage ($r_t \times 100\%$), top-2 distinguishing indicators. | Baseline operational triage; prevents unwarranted rejection of routine alerts. |
-| **$E_2$** | **Rich Semantic Evidence** | $E_1$ + MITRE ATT&CK technique IDs/tactics, CVE references with CVSS, top flow feature attributions. | Moderate miscalibration or complex incidents; contextualizes threat landscape. |
-| **$E_3$** | **Full Investigation** | $E_2$ + Uncertainty breakdown, ranked alternative threat hypotheses, and verification checklist. | Severe overtrust or high ambiguity; actively forces critical analytical thinking. |
+|   Level   | Name                       | Information Exposed                                                                                  | Operational Goal                                                                      |
+| :-------: | :------------------------- | :--------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
+| **$E_0$** | **Essential Decision**     | Predicted threat class and system severity label (Low/Med/High/Crit).                                | Routine, high-confidence alerts with well-calibrated trust; minimizes cognitive load. |
+| **$E_1$** | **Concise Evidence**       | Decision, calibrated reliability percentage ($r_t \times 100\%$), top-2 distinguishing indicators.   | Baseline operational triage; prevents unwarranted rejection of routine alerts.        |
+| **$E_2$** | **Rich Semantic Evidence** | $E_1$ + MITRE ATT&CK technique IDs/tactics, CVE references with CVSS, top flow feature attributions. | Moderate miscalibration or complex incidents; contextualizes threat landscape.        |
+| **$E_3$** | **Full Investigation**     | $E_2$ + Uncertainty breakdown, ranked alternative threat hypotheses, and verification checklist.     | Severe overtrust or high ambiguity; actively forces critical analytical thinking.     |
 
 ---
 
@@ -142,6 +147,7 @@ trust-in-AI-Driven-Security-Operations/
 ## 🚀 Installation & Quickstart
 
 ### Prerequisites
+
 - Python 3.9, 3.10, or 3.11
 - PyTorch 2.0+
 
@@ -159,7 +165,9 @@ pip install -r requirements.txt
 ```
 
 ### Run Unit Tests
+
 Verify mathematical and functional integrity across all modules:
+
 ```bash
 python3 -m unittest discover -s tests -p "test_*.py"
 ```
@@ -169,38 +177,52 @@ python3 -m unittest discover -s tests -p "test_*.py"
 ## 📊 Reproducing Experimental Results
 
 ### 1. Multimodal NIDS Training & Temperature Scaling Calibration
+
 Trains the traffic-text contrastive encoder on network flows and optimizes the calibration temperature parameter ($\tau_{\mathrm{cal}}$):
+
 ```bash
 python3 scripts/train_nids.py --dataset CSE-CIC-IDS2018 --epochs 15
 ```
-*Outputs:*
+
+_Outputs:_
+
 - Classification Accuracy & Macro-F1
 - Raw ECE vs Calibrated ECE
 - Paired McNemar's Test against Random Forest baseline
 - Reliability Diagram saved to `results/nids/reliability_diagram_cse-cic-ids2018.png`
 
 ### 2. Full Cohort Human-in-the-Loop Simulation (2,160 Trials)
+
 Executes the within-subject protocol across 36 participants (60 trials each) counterbalanced via Latin Square:
+
 ```bash
 python3 scripts/run_experiment.py --participants 36 --output-dir results
 ```
-*Outputs matching the paper:*
+
+_Outputs matching the paper:_
+
 - **Table 2 / Table 5:** Trust Calibration Outcomes (MACE, $\mathrm{MACE}_{\mathrm{self}}$, Calibration Loss)
 - **Table 3 / Table 6:** Decision Accuracy, ABR, IRR, Response Time, and NASA-TLX
 - **Table 4 / Table 7:** Hierarchical crossed mixed-effects models (GLMM logit & LMM) with Benjamini-Hochberg adjusted $p$-values and Odds Ratios
 
 ### 3. Controller Component Ablation Analysis
+
 Compares the full controller against Trust-Only, Reliability-Only, and Symmetric configurations:
+
 ```bash
 python3 scripts/run_ablation.py --participants 12
 ```
 
 ### 4. Generate Publication Figures
+
 Generates high-resolution publication diagrams:
+
 ```bash
 python3 scripts/generate_figures.py
 ```
-*Generated plots in `results/figures/`:*
+
+_Generated plots in `results/figures/`:_
+
 - `fig3_operational_performance.png`: Comparative bar charts (Acc, ABR, IRR, NASA-TLX).
 - `fig4_state_trajectory.png`: Temporal trace of trust, reliability, and cognitive load during error perturbation and recovery.
 - `fig5_explanation_distribution.png`: Percentage breakdown of explanation levels ($E_0$--$E_3$) for TA vs TC.
@@ -216,6 +238,7 @@ python3 scripts/launch_soc_console.py --port 8080
 ```
 
 Open `http://127.0.0.1:8080/index.html` in your browser. The console features:
+
 - **Live Security Alert Telemetry:** Raw flow indicators, source/destination IPs, protocols, and difficulty.
 - **AI Recommendation Banner:** Real-time NIDS verdict and calibrated reliability badge.
 - **Adaptive Explanation Card:** Dynamically adjusts across $E_0, E_1, E_2, E_3$ as the controller reacts to overtrust or undertrust.
@@ -229,32 +252,12 @@ Open `http://127.0.0.1:8080/index.html` in your browser. The console features:
 
 Empirical results from the 2,160-trial evaluation cohort:
 
-| Interface Condition | Decision Accuracy | Automation Bias (ABR) | Inapp. Rejection (IRR) | Calibration (MACE) | NASA-TLX Workload | Mean Latency |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Static Explanation ($E_1$)** | 81.4% (586/720) | 43.1% (31/72) | 18.9% (122/648) | $0.184 \pm 0.071$ | $58.4 \pm 13.1$ | $30.2 \pm 11.4$ s |
-| **Trust-Agnostic Adaptive ($\pi_{\mathrm{TA}}$)** | 85.0% (612/720) | 33.8% (24/72) | 15.8% (102/648) | $0.149 \pm 0.062$ | $54.1 \pm 12.4$ | $28.8 \pm 10.6$ s |
-| **Trust-Calibrated Adaptive ($\pi_{\mathrm{TC}}$)** | **89.3% (643/720)** | **21.8% (16/72)** | **10.9% (71/648)** | $\mathbf{0.101 \pm 0.049}$ | $\mathbf{48.7 \pm 11.8}$ | $\mathbf{28.1 \pm 10.1}$ s |
-| *Relative Improvement (TC vs Static)* | **+7.9 pp** ($p < 0.001$) | **-49.4%** ($p < 0.001$) | **-42.3%** ($p = 0.008$) | **-45.1%** ($p < 0.001$) | **-16.6%** ($p < 0.001$) | **-6.9%** ($p = 0.018$) |
-
----
-
-## 📖 Citation
-
-If you use this codebase or methodology in your research, please cite:
-
-```bibtex
-@article{dellacqua2026humancentric,
-  title={Human-Centric Trust Calibration and Adaptive Explainability in AI-Driven Security Operations},
-  author={Dell'Acqua, Pierluigi and La Rosa, Francesco and Villari, Massimo},
-  journal={Future Internet},
-  volume={1},
-  number={0},
-  pages={1--25},
-  year={2026},
-  publisher={MDPI},
-  doi={10.3390/fi0000000}
-}
-```
+| Interface Condition                                 |     Decision Accuracy     |  Automation Bias (ABR)   |  Inapp. Rejection (IRR)  |     Calibration (MACE)     |    NASA-TLX Workload     |        Mean Latency        |
+| :-------------------------------------------------- | :-----------------------: | :----------------------: | :----------------------: | :------------------------: | :----------------------: | :------------------------: |
+| **Static Explanation ($E_1$)**                      |      81.4% (586/720)      |      43.1% (31/72)       |     18.9% (122/648)      |     $0.184 \pm 0.071$      |     $58.4 \pm 13.1$      |     $30.2 \pm 11.4$ s      |
+| **Trust-Agnostic Adaptive ($\pi_{\mathrm{TA}}$)**   |      85.0% (612/720)      |      33.8% (24/72)       |     15.8% (102/648)      |     $0.149 \pm 0.062$      |     $54.1 \pm 12.4$      |     $28.8 \pm 10.6$ s      |
+| **Trust-Calibrated Adaptive ($\pi_{\mathrm{TC}}$)** |    **89.3% (643/720)**    |    **21.8% (16/72)**     |    **10.9% (71/648)**    | $\mathbf{0.101 \pm 0.049}$ | $\mathbf{48.7 \pm 11.8}$ | $\mathbf{28.1 \pm 10.1}$ s |
+| _Relative Improvement (TC vs Static)_               | **+7.9 pp** ($p < 0.001$) | **-49.4%** ($p < 0.001$) | **-42.3%** ($p = 0.008$) |  **-45.1%** ($p < 0.001$)  | **-16.6%** ($p < 0.001$) |  **-6.9%** ($p = 0.018$)   |
 
 ---
 
